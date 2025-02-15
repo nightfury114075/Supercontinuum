@@ -4,15 +4,15 @@ clear all
 format long
 tic
 
-w_core = 5;
-h_core = 1;
-w_clad = 7;
-h_clad = 5;
+w_core = 3;
+h_core = 0.6;
+w_clad = 7 ;
+h_clad = 6;
 
 Aeff =3.52298999000743E-12; 	  	% effective mode area [m^2]
-power = 2000;         		      	% peak power of input [W]2
-lambdapump =3000;           	    % pump wavelength [nm]
-FWHM =50e-3;                          % pulse width in FWHM [ps] 
+power = 5000;         		      	% peak power of input [W]2
+lambdapump =   1550;           	    % pump wavelength [nm]
+FWHM =75e-3;                          % pulse width in FWHM [ps] 
 
 
 %%Dispersion Engineering                      
