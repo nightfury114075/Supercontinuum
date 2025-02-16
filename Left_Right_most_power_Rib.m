@@ -6,8 +6,8 @@ tic
 
 Clad = 1;    % MgF2 = 1 & SiO2 = 2
 
-for i = 7:9:162
-datax = readmatrix('SiN_MgF2__Rib2_2.5.xlsx'); % Read entire Excel file
+for i = 7:9:81
+datax = readmatrix('SiN_MgF2__Rib3.xlsx'); % Read entire Excel file
 Wc = datax(1,i-6);
 Wc1 = datax(1,i-5);
 Hc = datax(1,i-4);
@@ -19,7 +19,7 @@ cols1 = i ;  % Select column indices
 n_eff = datax(rows1, cols1); % Extract specific rows and columns:
 
 for power = 3000:500:5000     		      	% peak power of input [W]2
-    for FWHM = 50e-3:25e-3:75e-3
+    for FWHM = 50e-3:25e-3:100e-3
         for PWL = 1550:50:1750
     
 PWL = PWL;           	    % pump wavelength [nm]
