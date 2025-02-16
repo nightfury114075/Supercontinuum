@@ -4,9 +4,10 @@ clear all
 format long
 tic
 
-for i = 7:9:16
+Clad = 1;    % MgF2 = 1 & SiO2 = 2
 
-datax = readmatrix('SiN_SiO2__Rib_6_2_3.xlsx'); % Read entire Excel file
+for i = 7:9:162
+datax = readmatrix('SiN_MgF2__Rib2_2.5.xlsx'); % Read entire Excel file
 Wc = datax(1,i-6);
 Wc1 = datax(1,i-5);
 Hc = datax(1,i-4);
@@ -17,9 +18,9 @@ rows1 = 1:81;  % Select row indices
 cols1 = i ;  % Select column indices
 n_eff = datax(rows1, cols1); % Extract specific rows and columns:
 
-for power = 5000:500:5000     		      	% peak power of input [W]2
-    for FWHM = 50e-3:25e-3:50e-3
-        for PWL = 1550:50:1550
+for power = 3000:500:5000     		      	% peak power of input [W]2
+    for FWHM = 50e-3:25e-3:75e-3
+        for PWL = 1550:50:1750
     
 PWL = PWL;           	    % pump wavelength [nm]
 FWHM = FWHM;                          % pulse width in FWHM [ps] 
@@ -109,19 +110,19 @@ lIT = 10*log10(IT/mIT);
 WL = 2*pi*c./W;							% wavelength grid 
 iis = (WL>300 & WL<20000);
  
-simLabel = sprintf('power=%d, FWHM=%.3f, PWL=%d', power, FWHM, PWL);
-% === plot input and final pulse spectral shape
-figure(2)
-%plot(WL(iis)/1000,lIW(240,iis),'-b','linewidth',3);
-plot(WL(iis)/1000,lIW(240,iis),'linewidth',1.5,'DisplayName', simLabel);
-xlabel('Wavelength [\mum]','FontSize',16);
-ylabel('Spectral Power [dB]','FontSize',16);
-set(gca,'FontSize',16);
-xlim([0.6,10]);
-ylim([-70,0]);
-grid on
-legend('show');
-hold on
+% simLabel = sprintf('power=%d, FWHM=%.3f, PWL=%d', power, FWHM, PWL);
+% % === plot input and final pulse spectral shape
+% figure(2)
+% %plot(WL(iis)/1000,lIW(240,iis),'-b','linewidth',3);
+% plot(WL(iis)/1000,lIW(240,iis),'linewidth',1.5,'DisplayName', simLabel);
+% xlabel('Wavelength [\mum]','FontSize',16);
+% ylabel('Spectral Power [dB]','FontSize',16);
+% set(gca,'FontSize',16);
+% xlim([0.6,10]);
+% ylim([-70,0]);
+% grid on
+% legend('show');
+% hold on
 
 % Extract data within the selected range
 WL_selected = WL(iis) / 1000;  % Convert nm to μm
@@ -141,7 +142,7 @@ else
 end
 
 % Prepare row data
-row_data = [right_wavelength, left_wavelength, Wc, Wc1, Hc, Hc1, power, FWHM, PWL, N];
+row_data = [right_wavelength, left_wavelength, Clad, Wc, Wc1, Hc, Hc1, power, FWHM, PWL, N];
 
 % Define CSV filename
 csv_filename = 'spectral_data.csv';
@@ -149,7 +150,7 @@ csv_filename = 'spectral_data.csv';
 % Check if file exists, if not, create with headers
 if exist(csv_filename, 'file') == 0
     fid = fopen(csv_filename, 'w');
-    fprintf(fid, 'Left_Wavelength,Right_Wavelength, W_core, W_core1, H_core, H_core1, Power,FWHM,PWL, S_order\n');
+    fprintf(fid, 'Left_Wavelength,Right_Wavelength, Cladding, W_core, W_core1, H_core, H_core1, Power,FWHM,PWL, S_order\n');
     fclose(fid);
 end
 
