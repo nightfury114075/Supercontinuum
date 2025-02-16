@@ -7,9 +7,9 @@ tic
 Wc1 = 0;
 Hc1 = 0;
 
-for i = 5:7:62
+for i = 5:7:12
 
-datax = readmatrix('SiN_MgF2_Channel2.25.xlsx'); % Read entire Excel file
+datax = readmatrix('SiN_SiO2__Channel2.25.xlsx'); % Read entire Excel file
 Wc = datax(1,i-4);
 Hc = datax(1,i-3);
 Aeff = datax(12,i+1); 	  	% effective mode area [m^2]
@@ -17,9 +17,9 @@ rows1 = 1:81;  % Select row indices
 cols1 = i ;  % Select column indices
 n_eff = datax(rows1, cols1); % Extract specific rows and columns:
 
-for power = 3000:500:5000     		      	% peak power of input [W]2
-    for FWHM = 50e-3:25e-3:100e-3
-        for PWL = 1550:50:1750
+for power = 3000:500:3000     		      	% peak power of input [W]2
+    for FWHM = 50e-3:25e-3:50e-3
+        for PWL = 1550:50:1550
     
 PWL = PWL;           	    % pump wavelength [nm]
 FWHM = FWHM;                          % pulse width in FWHM [ps] 
@@ -40,14 +40,6 @@ N = length(lambda);
 lambda=lambda*1e3;
 betas=betas(1:N_betas);
 
-
-% figure(1)
-% plot (lambda(2:N-1)/1e-6,D(2:N-1),'linewidth',2);
-% xlabel ('Wavelength [\mum]');
-% ylabel ('D [ps/nm/km]');
-% %xlim([0.9,1.6]);
-% grid on
-% hold on
 
 
 n2 = 2.6e-19;                           % nonlinear refrective index [m^2/W] for GeAsSe
@@ -117,20 +109,54 @@ lIT = 10*log10(IT/mIT);
 WL = 2*pi*c./W;							% wavelength grid 
 iis = (WL>300 & WL<20000);
  
-% 
-% simLabel = sprintf('power=%d, FWHM=%.3f, PWL=%d', power, FWHM, PWL);
-% % === plot input and final pulse spectral shape
-% figure(2)
-% %plot(WL(iis)/1000,lIW(240,iis),'-b','linewidth',3);
-% plot(WL(iis)/1000,lIW(240,iis),'linewidth',1.5,'DisplayName', simLabel);
-% xlabel('Wavelength [\mum]','FontSize',16);
-% ylabel('Spectral Power [dB]','FontSize',16);
-% set(gca,'FontSize',16);
-% xlim([0.6,10]);
-% ylim([-70,0]);
-% grid on
-% legend('show');
-% hold on
+simLabel = sprintf('power=%d, FWHM=%.3f, PWL=%d', power, FWHM, PWL);
+% === plot input and final pulse spectral shape
+figure(2)
+%plot(WL(iis)/1000,lIW(240,iis),'-b','linewidth',3);
+plot(WL(iis)/1000,lIW(240,iis),'linewidth',1.5,'DisplayName', simLabel);
+xlabel('Wavelength [\mum]','FontSize',16);
+ylabel('Spectral Power [dB]','FontSize',16);
+set(gca,'FontSize',16);
+xlim([0.6,10]);
+ylim([-70,0]);
+grid on
+legend('show');
+hold on
+
+% Extract data within the selected range
+WL_selected = WL(iis) / 1000;  % Convert nm to μm
+Spectral_Power = lIW(240, iis); % Extract spectral power
+
+% Find crossing points at -40 dB
+crossing_idx = find(diff(Spectral_Power >= -40)); 
+
+if length(crossing_idx) >= 2
+    left_wavelength = interp1(Spectral_Power(crossing_idx(1):crossing_idx(1)+1), ...
+                              WL_selected(crossing_idx(1):crossing_idx(1)+1), -40);
+    right_wavelength = interp1(Spectral_Power(crossing_idx(end):crossing_idx(end)+1), ...
+                               WL_selected(crossing_idx(end):crossing_idx(end)+1), -40);
+else
+    left_wavelength = NaN;  % If crossing not found, store NaN
+    right_wavelength = NaN;
+end
+
+% Prepare row data
+row_data = [power, FWHM, PWL, left_wavelength, right_wavelength];
+
+% Define CSV filename
+csv_filename = 'spectral_data.csv';
+
+% Check if file exists, if not, create with headers
+if exist(csv_filename, 'file') == 0
+    fid = fopen(csv_filename, 'w');
+    fprintf(fid, 'Power,FWHM,PWL,Left_Wavelength,Right_Wavelength\n');
+    fclose(fid);
+end
+
+% Append new data row
+dlmwrite(csv_filename, row_data, '-append');
+disp('Data recorded successfully.');
+
 
 
 toc;
