@@ -4,10 +4,10 @@ clear all
 format long
 tic
 
-Clad = 1;    % MgF2 = 1 & SiO2 = 2
+Clad = 2;    % MgF2 = 1 & SiO2 = 2
 
-for i = 7:9:81
-datax = readmatrix('SiN_MgF2__Rib3.xlsx'); % Read entire Excel file
+for i = 7:9:161
+datax = readmatrix('SiN_SiO2__Rib_6_2_3.xlsx'); % Read entire Excel file
 Wc = datax(1,i-6);
 Wc1 = datax(1,i-5);
 Hc = datax(1,i-4);
