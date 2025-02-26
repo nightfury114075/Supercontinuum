@@ -4,15 +4,14 @@ clear all
 format long
 tic
 
+Wc1 = 0;
+Hc1 = 0;
 
-for i = 7:9:162
+for i = 5:7:62
 
-datax = readmatrix('SiN_SiO2__Rib_6_2_3.xlsx'); % Read entire Excel file
-Wc = datax(1,i-6);
-Wc1 = datax(1,i-5);
-Hc = datax(1,i-4);
-Hc1 = datax(1,i-3);
-
+datax = readmatrix('SiN_MgF2_Channel2.25.xlsx'); % Read entire Excel file
+Wc = datax(1,i-4);
+Hc = datax(1,i-3);
 Aeff = datax(12,i+1); 	  	% effective mode area [m^2]
 rows1 = 1:81;  % Select row indices
 cols1 = i ;  % Select column indices
@@ -210,19 +209,19 @@ WL = 2*pi*c./W;							% wavelength grid
 iis = (WL>300 & WL<20000);
  
 
-% simLabel = sprintf('power=%d, FWHM=%.3f, PWL=%d', power, FWHM, PWL);
-% % === plot input and final pulse spectral shape
-% figure(2)
-% %plot(WL(iis)/1000,lIW(240,iis),'-b','linewidth',3);
-% plot(WL(iis)/1000,lIW(240,iis),'linewidth',1.5,'DisplayName', simLabel);
-% xlabel('Wavelength [\mum]','FontSize',16);
-% ylabel('Spectral Power [dB]','FontSize',16);
-% set(gca,'FontSize',16);
-% xlim([0.6,10]);
-% ylim([-70,0]);
-% grid on
-% legend('show');
-% hold on
+simLabel = sprintf('power=%d, FWHM=%.3f, PWL=%d', power, FWHM, PWL);
+% === plot input and final pulse spectral shape
+figure(2)
+%plot(WL(iis)/1000,lIW(240,iis),'-b','linewidth',3);
+plot(WL(iis)/1000,lIW(240,iis),'linewidth',1.5,'DisplayName', simLabel);
+xlabel('Wavelength [\mum]','FontSize',16);
+ylabel('Spectral Power [dB]','FontSize',16);
+set(gca,'FontSize',16);
+xlim([0.6,10]);
+ylim([-70,0]);
+grid on
+legend('show');
+hold on
 
 % % % === plot log scale spectral and temporal density
 % figure(3)
@@ -299,9 +298,7 @@ fprintf(fileID, ['%f,%f,%f,%f,%f,%f,%f,%f,' repmat('%f,', 1, size(lastRow, 2) - 
 % Close the file
 fclose(fileID);
 
-
-
-
+% disp('Simulation data saved successfully.');
         end
     end
 
@@ -336,7 +333,5 @@ fprintf(fileID, ['%f,%f,%f,%f,' repmat('%f,', 1, size(data1, 2) - 1) '%f\n'], da
 % Close the file
 fclose(fileID);
 % disp('Simulation data saved successfully.');
-
 end
-
 disp('Simulation data saved successfully.');
